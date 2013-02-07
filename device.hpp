@@ -39,7 +39,7 @@ namespace galaxy {
             std::uint16_t version;
             std::string name;
 
-            shared_ptr<dcpu> cpu;
+            dcpu* cpu;
 
             /**
              * called at approximately 60 Hz
