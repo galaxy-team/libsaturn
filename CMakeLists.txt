@@ -1,16 +1,19 @@
 cmake_minimum_required(VERSION 2.8.5)
 project(libsaturn)
 
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
 # ensure that the cxx files get compiled with c++11 support enabled
 set(CMAKE_CXX_FLAGS "--std=c++11 ${CMAKE_CXX_FLAGS}")
 
 # ensure the linker can find libsaturn
-include_directories(${CMAKE_CURRENT_SOURCE_DIR/src})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/device)
 
 
 # create a standalone library file for integration
-set(SATURN_LIB_SRC ${CMAKE_CURRENT_SOURCE_DIR/lib})
+set(SATURN_LIB_SRC ${CMAKE_CURRENT_SOURCE_DIR})
 add_library (libsaturn
     ${SATURN_LIB_SRC}/src/libsaturn.cpp
 
