@@ -21,8 +21,6 @@ file named "LICENSE-LGPL.txt".
 */
 
 #include <libsaturn.hpp>
-#include <device.hpp>
-#include <keyboard.hpp>
 
 void galaxy::saturn::keyboard::interrupt()
 {

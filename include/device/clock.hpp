@@ -24,7 +24,6 @@ file named "LICENSE-LGPL.txt".
 #define CLOCK_HPP
 
 #include <libsaturn.hpp>
-#include <device.hpp>
 #include <cstdint>
 
 namespace galaxy {

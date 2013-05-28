@@ -24,7 +24,6 @@ file named "LICENSE-LGPL.txt".
 #define KEYBOARD_HPP
 
 #include <libsaturn.hpp>
-#include <device.hpp>
 #include <cstdint>
 #include <deque>
 #include <set>

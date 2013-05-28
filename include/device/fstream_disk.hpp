@@ -24,7 +24,6 @@ file named "LICENSE-LGPL.txt".
 #define FSTREAM_DISK_HPP
 
 #include <libsaturn.hpp>
-#include <disk.hpp>
 #include <cstdint>
 
 #include <fstream>

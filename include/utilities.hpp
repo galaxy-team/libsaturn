@@ -1,4 +1,5 @@
 #include <vector>
+#include <cstdint>
 
 namespace galaxy {
     namespace saturn {

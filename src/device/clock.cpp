@@ -21,8 +21,6 @@ file named "LICENSE-LGPL.txt".
 */
 
 #include <libsaturn.hpp>
-#include <device.hpp>
-#include <clock.hpp>
 
 void galaxy::saturn::clock::interrupt()
 {

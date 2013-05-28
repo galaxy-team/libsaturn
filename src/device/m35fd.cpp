@@ -21,8 +21,6 @@ file named "LICENSE-LGPL.txt".
 */
 
 #include <libsaturn.hpp>
-#include <device.hpp>
-#include <m35fd.hpp>
 
 #include <cmath>
 

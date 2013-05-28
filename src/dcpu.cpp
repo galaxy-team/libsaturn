@@ -21,9 +21,6 @@ file named "LICENSE-LGPL.txt".
 */
 
 #include <libsaturn.hpp>
-#include <device.hpp>
-#include <invalid_opcode.hpp>
-#include <queue_overflow.hpp>
 
 #include <cstdint>
 

@@ -20,29 +20,27 @@ file named "LICENSE-LGPL.txt".
 
 */
 
-#ifndef MEM_DISK_HPP
-#define MEM_DISK_HPP
+#ifndef LIBSATURN_HPP
+#define LIBSATURN_HPP
 
-#include <libsaturn.hpp>
-#include <disk.hpp>
-#include <cstdint>
+#include <device/device.hpp>
 
-#include <array>
+#include <dcpu.hpp>
+#include <invalid_opcode.hpp>
+#include <out_of_range.hpp>
+#include <queue_overflow.hpp>
+#include <utilities.hpp>
 
-namespace galaxy {
-    namespace saturn {
-        /**
-         * represents a data disk, stored in a file
-         */
-        class mem_disk : public disk{
-            protected:
-                std::array<std::array<std::uint16_t, SECTOR_SIZE>, NUM_SECTORS> sectors;
-            public:
 
-                virtual std::array<std::uint16_t, SECTOR_SIZE> read_sector(std::uint16_t sector);
-                virtual void write_sector(std::uint16_t sector, std::array<std::uint16_t, SECTOR_SIZE>);
-        };
-    }
-}
+#include <device/clock.hpp>
+
+#include <device/disk.hpp>
+#include <device/fstream_disk.hpp>
+#include <device/mem_disk.hpp>
+
+#include <device/keyboard.hpp>
+#include <device/lem1802.hpp>
+#include <device/m35fd.hpp>
+#include <device/sped3.hpp>
 
 #endif

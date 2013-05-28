@@ -21,8 +21,6 @@ file named "LICENSE-LGPL.txt".
 */
 
 #include <libsaturn.hpp>
-#include <device.hpp>
-#include <lem1802.hpp>
 
 const std::array<std::uint16_t, 256> galaxy::saturn::lem1802::default_font = {
     0xb79e, 0x388e, 0x722c, 0x75f4, 0x19bb, 0x7f8f, 0x85f9, 0xb158, 0x242e, 0x2400, 0x082a, 0x0800, 0x0008, 0x0000, 0x0808, 0x0808,

@@ -21,7 +21,6 @@ file named "LICENSE-LGPL.txt".
 */
 
 #include <libsaturn.hpp>
-#include <fstream_disk.hpp>
 
 std::array<std::uint16_t, galaxy::saturn::disk::SECTOR_SIZE> galaxy::saturn::fstream_disk::read_sector(std::uint16_t sector)
 {

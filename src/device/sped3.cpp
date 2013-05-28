@@ -21,7 +21,6 @@ file named "LICENSE-LGPL.txt".
 */
 
 #include <libsaturn.hpp>
-#include <sped3.hpp>
 
 #include <cmath>
 

@@ -24,7 +24,6 @@ file named "LICENSE-LGPL.txt".
 #define SPED3_HPP
 
 #include <libsaturn.hpp>
-#include <device.hpp>
 
 #include <cstdint>
 

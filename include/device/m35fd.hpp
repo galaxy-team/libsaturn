@@ -24,8 +24,6 @@ file named "LICENSE-LGPL.txt".
 #define M35FD_HPP
 
 #include <libsaturn.hpp>
-#include <device.hpp>
-#include <disk.hpp>
 
 #include <cstdint>
 

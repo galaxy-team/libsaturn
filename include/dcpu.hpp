@@ -20,10 +20,10 @@ file named "LICENSE-LGPL.txt".
 
 */
 
-#ifndef LIBSATURN_HPP
-#define LIBSATURN_HPP
+#ifndef DCPU_HPP
+#define DCPU_HPP
 
-#include <device.hpp>
+#include <libsaturn.hpp>
 
 #include <cstdint>
 #include <vector>

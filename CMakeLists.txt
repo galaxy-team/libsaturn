@@ -8,14 +8,12 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_CXX_FLAGS "--std=c++11 ${CMAKE_CXX_FLAGS}")
 
 # ensure the linker can find libsaturn
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/device)
-
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # create a standalone library file for integration
 set(SATURN_LIB_SRC ${CMAKE_CURRENT_SOURCE_DIR})
 add_library (libsaturn
-    ${SATURN_LIB_SRC}/src/libsaturn.cpp
+    ${SATURN_LIB_SRC}/src/dcpu.cpp
 
     # device files
     ${SATURN_LIB_SRC}/src/device/clock.cpp
