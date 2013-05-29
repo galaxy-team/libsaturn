@@ -1,0 +1,27 @@
+language: cpp
+
+# install dependencies
+install:
+    - "sudo apt-add-repository -y \"deb http://ubuntu.mirror.cambrium.nl/ubuntu/ raring main\""
+#    - "sudo apt-add-repository -y \"deb http://ppa.launchpad.net/sonkun/sfml-stable/ubuntu raring main\""
+    - "sudo apt-get update"
+    - "sudo apt-get install gcc g++ build-essential" # libsfml-dev"
+
+    - "sudo apt-get install libxrandr-dev libfreetype6-dev libglew-dev libjpeg-dev libopenal-dev libsndfile1-dev"
+    - "wget http://www.sfml-dev.org/download/sfml/2.0/SFML-2.0-sources.zip"
+    - "unzip SFML-2.0-sources.zip"
+    - "cd SFML-2.0 && cmake . && sudo make && sudo make install && cd .."
+
+
+# ensure submodules are available
+before_script:
+   - "git submodule update --init"
+
+# do the building
+script:
+   - "cmake ."
+   - "make"
+   - "./bin/tests"
+
+notifications:
+  irc: "irc.freenode.net#0x10c-galaxy"
