@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8.5)
 project(libsaturn)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
@@ -30,4 +31,12 @@ add_library (libsaturn
 )
 # ensure that the output file for libsaturn only contains one lib (ie, not liblibsaturn)
 set_target_properties(libsaturn PROPERTIES PREFIX "")
+
+## if testing has been enabled, build the tests and run them! :D
+add_executable(tests
+    ${CMAKE_CURRENT_SOURCE_DIR}/tests/tests.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_device.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/tests/units/test_disk.cpp
+)
+target_link_libraries(tests libsaturn)
 
