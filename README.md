@@ -1,1 +1,18 @@
-The `src/lib/` directory contains the source code for saturn's libraries. 
+libsaturn
+=======
+
+libsaturn is a DCPU-16 emulation library.
+
+Example
+-----------
+
+    #include <libsaturn.hpp>
+
+    using namespace galaxy::saturn;
+
+    int main()
+    {
+        dcpu cpu;
+    }
+
+TODO: finish above example
