@@ -46,6 +46,7 @@ namespace galaxy {
             dcpu* cpu;
 
             device() {}
+            virtual ~device() {}
 
             device(std::uint32_t id, std::uint32_t manufacturer, std::uint16_t version, std::string name) :
                 id(id), manufacturer(manufacturer), version(version), name(name) {}
