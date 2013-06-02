@@ -5,14 +5,14 @@ libsaturn is a DCPU-16 emulation library.
 
 Example
 -----------
+```cpp
+#include <libsaturn.hpp>
 
-    #include <libsaturn.hpp>
+using namespace galaxy::saturn;
 
-    using namespace galaxy::saturn;
-
-    int main()
-    {
-        dcpu cpu;
-    }
-
+int main()
+{
+    dcpu cpu;
+}
+```
 TODO: finish above example
