@@ -30,11 +30,11 @@ file named "LICENSE-LGPL.txt".
 namespace galaxy {
     namespace saturn {
         /**
-         * represents a single pixel
+         * represents the color of a single pixel
          */
-        struct pixel {
-            pixel() : r{0x0}, g(0x0), b(0x0) {}
-            pixel(uint8_t r, uint8_t g, uint8_t b) : r(r), g(g), b(b) {}
+        struct color {
+            color() : r{0x0}, g(0x0), b(0x0) {}
+            color(uint8_t r, uint8_t g, uint8_t b) : r(r), g(g), b(b) {}
             std::uint8_t r, g, b;
         };
 
@@ -108,8 +108,8 @@ namespace galaxy {
             static const unsigned int width = num_cells_x * cell_width;
             static const unsigned int height = num_cells_y * cell_height;
 
-            std::array<std::array<pixel, width>, height> image();
-            pixel border();
+            std::array<std::array<color, width>, height> image();
+            color border();
         };
     }
 }

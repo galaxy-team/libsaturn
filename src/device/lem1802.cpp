@@ -166,9 +166,9 @@ std::uint16_t galaxy::saturn::lem1802::palette_map_address()
     return pram_pointer;
 }
 
-std::array<std::array<galaxy::saturn::pixel, galaxy::saturn::lem1802::width>, galaxy::saturn::lem1802::height> galaxy::saturn::lem1802::image()
+std::array<std::array<galaxy::saturn::color, galaxy::saturn::lem1802::width>, galaxy::saturn::lem1802::height> galaxy::saturn::lem1802::image()
 {
-    std::array<std::array<galaxy::saturn::pixel, galaxy::saturn::lem1802::width>, galaxy::saturn::lem1802::height> image;
+    std::array<std::array<galaxy::saturn::color, galaxy::saturn::lem1802::width>, galaxy::saturn::lem1802::height> image;
 
     if (state != ACTIVATED)
         return image;
@@ -210,15 +210,15 @@ std::array<std::array<galaxy::saturn::pixel, galaxy::saturn::lem1802::width>, ga
 
         // note: scale all colors by 0x11 times
 
-        galaxy::saturn::pixel bg_pixel;
-        bg_pixel.r = ((background >> 8) & 0xf) * 0x11;
-        bg_pixel.g = ((background >> 4) & 0xf) * 0x11;
-        bg_pixel.b = (background & 0xf) * 0x11;
+        galaxy::saturn::color bg_color;
+        bg_color.r = ((background >> 8) & 0xf) * 0x11;
+        bg_color.g = ((background >> 4) & 0xf) * 0x11;
+        bg_color.b = (background & 0xf) * 0x11;
 
-        galaxy::saturn::pixel fg_pixel;
-        fg_pixel.r = ((foreground >> 8) & 0xf) * 0x11;
-        fg_pixel.g = ((foreground >> 4) & 0xf) * 0x11;
-        fg_pixel.b = (foreground & 0xf) * 0x11;
+        galaxy::saturn::color fg_color;
+        fg_color.r = ((foreground >> 8) & 0xf) * 0x11;
+        fg_color.g = ((foreground >> 4) & 0xf) * 0x11;
+        fg_color.b = (foreground & 0xf) * 0x11;
 
         int j = 0;
 
@@ -226,11 +226,11 @@ std::array<std::array<galaxy::saturn::pixel, galaxy::saturn::lem1802::width>, ga
             for (int y = 0; y < galaxy::saturn::lem1802::cell_height; y++) {
                 unsigned int cur_y = (i / galaxy::saturn::lem1802::num_cells_x) * (galaxy::saturn::lem1802::cell_height - 1) + y;
                 unsigned int cur_x = i * galaxy::saturn::lem1802::cell_width + x;
-                galaxy::saturn::pixel& p = image[cur_y][cur_x];
+                galaxy::saturn::color& c = image[cur_y][cur_x];
                 if (character >> j & 0x1) {
-                    p = fg_pixel;
+                    c = fg_color;
                 } else {
-                    p = bg_pixel;
+                    c = bg_color;
                 }
                 j++;
             }
@@ -240,9 +240,9 @@ std::array<std::array<galaxy::saturn::pixel, galaxy::saturn::lem1802::width>, ga
     return image;
 }
 
-galaxy::saturn::pixel galaxy::saturn::lem1802::border()
+galaxy::saturn::color galaxy::saturn::lem1802::border()
 {
-    pixel p;
+    color c;
     std::uint16_t color;
 
     if (pram_pointer != 0) {
@@ -251,9 +251,9 @@ galaxy::saturn::pixel galaxy::saturn::lem1802::border()
         color = default_palette[border_color % 0xffff];
     }
 
-    p.r = ((color >> 8) & 0xf) * 0x11;
-    p.g = ((color >> 4) & 0xf) * 0x11;
-    p.b = (color & 0xf) * 0x11;
+    c.r = ((color >> 8) & 0xf) * 0x11;
+    c.g = ((color >> 4) & 0xf) * 0x11;
+    c.b = (color & 0xf) * 0x11;
 
-    return p;
+    return c;
 }
