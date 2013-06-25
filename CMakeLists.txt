@@ -32,11 +32,13 @@ add_library (libsaturn
 # ensure that the output file for libsaturn only contains one lib (ie, not liblibsaturn)
 set_target_properties(libsaturn PROPERTIES PREFIX "")
 
-## if testing has been enabled, build the tests and run them! :D
-add_executable(tests
-    ${CMAKE_CURRENT_SOURCE_DIR}/tests/tests.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_device.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/tests/units/test_disk.cpp
-)
-target_link_libraries(tests libsaturn)
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+    ## if testing has been enabled, build the tests and run them! :D
+    add_executable(tests
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/tests.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_device.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/units/test_disk.cpp
+    )
+    target_link_libraries(tests libsaturn)
+endif()
 
