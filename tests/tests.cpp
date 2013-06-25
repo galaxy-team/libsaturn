@@ -1225,7 +1225,7 @@ TEST_CASE("lem1802/set_border_color", "tests the lem1802's SET_BORDER_COLOR inte
     galaxy::saturn::dcpu cpu;
     galaxy::saturn::lem1802& lem1802 = static_cast<galaxy::saturn::lem1802&>(cpu.attach_device(new galaxy::saturn::lem1802()));
 
-    galaxy::saturn::pixel b = lem1802.border();
+    galaxy::saturn::color b = lem1802.border();
 
     REQUIRE(b.r == 0);
     REQUIRE(b.g == 0);
