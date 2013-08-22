@@ -537,7 +537,11 @@ void galaxy::saturn::dcpu::cycle()
             a = (instruction >> 10) & 0x3f;
 
             get_reference(a, true);
-            get_reference(b, false);
+
+            // only resolve b if opcode is 'basic'
+            if (opcode != 0x00)
+                get_reference(b, false);
+
             sleep_cycles = sleep_cycles_old + 1;
 
         } while (opcode >= 0x10 && opcode <= 0x17);
