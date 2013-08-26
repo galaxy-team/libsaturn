@@ -104,9 +104,10 @@ void galaxy::saturn::lem1802::interrupt()
         case 4:
             {
                 auto font_it = default_font.begin();
-                auto ram_it = cpu->ram.begin();
-                std::advance(ram_it, cpu->B);
-                for (; font_it != default_font.end() && ram_it != cpu->ram.end(); ++font_it, ++ram_it)
+                auto ram_it = cpu->memory.begin();
+                // TODO: state the following more elegantly
+                std::advance(ram_it, cpu->B + cpu->NUM_MEM_BANKS * cpu->RAM_SIZE);
+                for (; font_it != default_font.end() && ram_it != cpu->memory.end(); ++font_it, ++ram_it)
                 {
                     *ram_it = *font_it;
                 }
@@ -122,9 +123,10 @@ void galaxy::saturn::lem1802::interrupt()
         case 5:
             {
                 auto palette_it = default_palette.begin();
-                auto ram_it = cpu->ram.begin();
-                std::advance(ram_it, cpu->B);
-                for (; palette_it != default_palette.end() && ram_it != cpu->ram.end(); ++palette_it, ++ram_it)
+                auto ram_it = cpu->memory.begin();
+                // TODO: state the following more elegantly
+                std::advance(ram_it, cpu->B + cpu->NUM_MEM_BANKS * cpu->RAM_SIZE);
+                for (; palette_it != default_palette.end() && ram_it != cpu->memory.end(); ++palette_it, ++ram_it)
                 {
                     *ram_it = *palette_it;
                 }
@@ -174,7 +176,7 @@ std::array<std::array<galaxy::saturn::color, galaxy::saturn::lem1802::width>, ga
         return image;
 
     for (int i = 0; i < galaxy::saturn::lem1802::num_cells_x * galaxy::saturn::lem1802::num_cells_y; i++) {
-        std::uint16_t cell = cpu->ram[(vram_pointer + i) % 0xffff];
+        std::uint16_t cell = cpu->ram((vram_pointer + i) % 0xffff);
 
         bool blink = (cell >> 7) & 0x1;
         if (blink && !blink_on)
@@ -190,8 +192,8 @@ std::array<std::array<galaxy::saturn::color, galaxy::saturn::lem1802::width>, ga
         std::uint32_t character;
 
         if (fram_pointer != 0) {
-            character = cpu->ram[(fram_pointer + (character_code * 2)) % 0xff] << 16
-                      | cpu->ram[(fram_pointer + (character_code * 2) + 1) % 0xff];
+            character = cpu->ram((fram_pointer + (character_code * 2)) % 0xff) << 16
+                      | cpu->ram((fram_pointer + (character_code * 2) + 1) % 0xff);
         } else {
             character = static_cast<std::uint32_t>(default_font[(character_code * 2) % 0xff]) << 16
                       | default_font[((character_code * 2) + 1) % 0xff];
@@ -201,8 +203,8 @@ std::array<std::array<galaxy::saturn::color, galaxy::saturn::lem1802::width>, ga
         std::uint16_t foreground;
 
         if (pram_pointer != 0) {
-            background = cpu->ram[(pram_pointer + background_palette) % 0xffff];
-            foreground = cpu->ram[(pram_pointer + foreground_palette) % 0xffff];
+            background = cpu->ram((pram_pointer + background_palette) % 0xffff);
+            foreground = cpu->ram((pram_pointer + foreground_palette) % 0xffff);
         } else {
             background = default_palette[background_palette % 0xffff];
             foreground = default_palette[foreground_palette % 0xffff];
@@ -246,7 +248,7 @@ galaxy::saturn::color galaxy::saturn::lem1802::border()
     std::uint16_t color;
 
     if (pram_pointer != 0) {
-        color = cpu->ram[(pram_pointer + border_color) % 0xffff];
+        color = cpu->ram((pram_pointer + border_color) % 0xffff);
     } else {
         color = default_palette[border_color % 0xffff];
     }

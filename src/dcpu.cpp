@@ -57,7 +57,7 @@ void galaxy::saturn::dcpu::cycle()
 
     bool skip = false;
 
-    std::uint16_t instruction = ram[PC++];
+    std::uint16_t instruction = ram(PC++);
     std::uint16_t opcode = instruction & 0x1f;
 
     std::uint16_t b = (instruction >> 5) & 0x1f;
@@ -405,8 +405,33 @@ void galaxy::saturn::dcpu::cycle()
              */
             case 0x01:
                 sleep_cycles += 3;
-                ram[--SP] = PC;
+                ram(--SP) = PC;
                 PC = a_value;
+                break;
+
+            /**
+             * MBG - 64 cycles
+             * sets a to MB
+             */
+            case 0x05:
+                sleep_cycles += 64;
+                a_value = MB;
+                break;
+
+            /**
+             * MBS - 64 cycles
+             * sets MB to a. If a is any number not in the range 0-7, it is
+             * treated as being 0.
+             */
+            case 0x06:
+                sleep_cycles += 64;
+
+                if (a_value <= NUM_MEM_BANKS - 1) {
+                    MB = a_value;
+                } else {
+                    MB = 0;
+                }
+
                 break;
 
             /**
@@ -449,8 +474,8 @@ void galaxy::saturn::dcpu::cycle()
                 sleep_cycles += 3;
 
                 queue_interrupts = false;
-                A = ram[SP++];
-                PC = ram[SP++];
+                A = ram(SP++);
+                PC = ram(SP++);
 
                 break;
 
@@ -517,6 +542,34 @@ void galaxy::saturn::dcpu::cycle()
 
                 break;
 
+            /**
+             * GRM - 2 cycles
+             * sets a to RM
+             */
+            case 0x16:
+                sleep_cycles += 2;
+                a_value = RM;
+                break;
+
+            /**
+             * DRM - 2 cycles
+             * sets a to RM. Then set RM to 1.
+             */
+            case 0x17:
+                sleep_cycles += 2;
+                a_value = RM;
+                RM = 1;
+                break;
+
+            /**
+             * SRT - 2 cycles
+             * Set global descriptor table. a is the memory address.
+             * a is always interpreted as being in the primary memory bank.
+             */
+            case 0x18:
+                // ?
+                break;
+
             /// invalid opcode
             default:
                 throw galaxy::saturn::invalid_opcode("failed to execute invalid opcode");
@@ -530,7 +583,7 @@ void galaxy::saturn::dcpu::cycle()
             // there's probably a more elegant way to ensure this takes a single cycle
             int sleep_cycles_old = sleep_cycles;
 
-            instruction = ram[PC++];
+            instruction = ram(PC++);
             opcode = instruction & 0x1f;
 
             b = (instruction >> 5) & 0x1f;
@@ -571,12 +624,17 @@ void galaxy::saturn::dcpu::interrupt(std::uint16_t message)
     } else if (IA != 0) {
         queue_interrupts = true;
 
-         ram[--SP] = PC;
-         ram[--SP] = A;
+         ram(--SP) = PC;
+         ram(--SP) = A;
 
          PC = IA;
          A = message;
      }
+}
+
+std::uint16_t& galaxy::saturn::dcpu::ram(std::uint16_t address)
+{
+    return memory[address + MB * RAM_SIZE];
 }
 
 std::uint16_t& galaxy::saturn::dcpu::get_reference(std::uint16_t val, bool a_value)
@@ -615,7 +673,7 @@ std::uint16_t& galaxy::saturn::dcpu::get_reference(std::uint16_t val, bool a_val
         case 0x0d:
         case 0x0e:
         case 0x0f:
-            return ram[get_reference(val - 0x08, a_value)];
+            return ram(get_reference(val - 0x08, a_value));
 
         case 0x10:
         case 0x11:
@@ -626,21 +684,21 @@ std::uint16_t& galaxy::saturn::dcpu::get_reference(std::uint16_t val, bool a_val
         case 0x16:
         case 0x17:
             sleep_cycles++;
-            return ram[get_reference(val - 0x10, a_value) + ram[PC++]];
+            return ram(get_reference(val - 0x10, a_value) + ram(PC++));
 
         case 0x18:
             if (a_value) {
-                return ram[SP++];
+                return ram(SP++);
             } else {
-                return ram[--SP];
+                return ram(--SP);
             }
 
         case 0x19:
-            return ram[SP];
+            return ram(SP);
 
         case 0x1a:
             sleep_cycles++;
-            return ram[SP + ram[PC++]];
+            return ram(SP + ram(PC++));
 
         case 0x1b:
             return SP;
@@ -653,11 +711,11 @@ std::uint16_t& galaxy::saturn::dcpu::get_reference(std::uint16_t val, bool a_val
 
         case 0x1e:
             sleep_cycles++;
-            return ram[ram[PC++]];
+            return ram(ram(PC++));
 
         case 0x1f:
             sleep_cycles++;
-            return ram[PC++];
+            return ram(PC++);
 
         default:
             literal_value = val - 0x21;
@@ -684,7 +742,7 @@ galaxy::saturn::device& galaxy::saturn::dcpu::attach_device(device* hw)
 void galaxy::saturn::dcpu::reset()
 {
     A = B = C = X = Y = Z = I = J = PC = SP = EX = IA = 0;
-    ram.fill(0);
+    memory.fill(0);
     queue_interrupts = false;
     sleep_cycles = 0;
 }

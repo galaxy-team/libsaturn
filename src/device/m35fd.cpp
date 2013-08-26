@@ -89,9 +89,9 @@ void galaxy::saturn::m35fd::interrupt()
                 // temporary storage for the selected sector to write
                 int read_from = cpu->Y;
 
-                auto ram_begin = cpu->ram.begin(), ram_end = cpu->ram.begin();
-                std::advance(ram_begin, read_from);
-                std::advance(ram_end, read_from + SECTOR_SIZE);
+                auto ram_begin = cpu->memory.begin(), ram_end = cpu->memory.begin();
+                std::advance(ram_begin, read_from + cpu->NUM_MEM_BANKS * cpu->RAM_SIZE);
+                std::advance(ram_end, read_from + SECTOR_SIZE + cpu->NUM_MEM_BANKS * cpu->RAM_SIZE);
 
                 std::copy(
                     ram_begin,               // copy start
@@ -120,8 +120,8 @@ void galaxy::saturn::m35fd::cycle() {
             cycles_left--;
         } else {
             if (reading) {
-                auto ram_begin = cpu->ram.begin();
-                std::advance(ram_begin, read_to);
+                auto ram_begin = cpu->memory.begin();
+                std::advance(ram_begin, read_to + cpu->NUM_MEM_BANKS * cpu->RAM_SIZE);
                 std::copy(
                     buffer.begin(),               // copy start
                     buffer.end(),                 // copy end
