@@ -29,13 +29,15 @@ void check_registers(galaxy::saturn::dcpu& cpu) {
     REQUIRE(cpu.SP == 0);
     REQUIRE(cpu.EX == 0);
     REQUIRE(cpu.IA == 0);
+    REQUIRE(cpu.MB == 0);
+    REQUIRE(cpu.RM == 0);
 }
 
 void check_memory(galaxy::saturn::dcpu& cpu) {
     bool all_zero = true;
 
-    for (int i = 0; i < cpu.ram.size(); i++) {
-        if (cpu.ram[i] != 0) {
+    for (int i = 0; i < cpu.memory.size(); i++) {
+        if (cpu.memory[i] != 0) {
             all_zero = false;
         }
     }
@@ -68,14 +70,14 @@ TEST_CASE("reset/registers", "All registers should be 0 after a reset") {
 
 TEST_CASE("reset/memory", "All memory should be 0 after a reset") {
     galaxy::saturn::dcpu cpu;
-    cpu.ram.fill(0xf00);
+    cpu.memory.fill(0xf00);
 
     cpu.reset();
 
     bool all_zero = true;
 
-    for (int i = 0; i < cpu.ram.size(); i++) {
-        if (cpu.ram[i] != 0) {
+    for (int i = 0; i < cpu.memory.size(); i++) {
+        if (cpu.memory[i] != 0) {
             all_zero = false;
         }
     }
@@ -661,7 +663,7 @@ TEST_CASE("opcodes/jsr", "pushes the address of the next instruction to the stac
     cpu.flash(codez.begin(), codez.end());
     int cycles = execute(cpu);
     REQUIRE(cpu.PC == 0xdead);
-    REQUIRE(cpu.ram[cpu.SP] == 0x2);
+    REQUIRE(cpu.ram(cpu.SP) == 0x2);
     REQUIRE(cycles == 4);
 }
 
@@ -712,8 +714,8 @@ TEST_CASE("opcodes/ias", "sets IA to a") {
 TEST_CASE("opcodes/rfi", "disables interrupt queueing, pops A from the stack, then pops PC from the stack") {
     galaxy::saturn::dcpu cpu;
 
-    cpu.ram[--cpu.SP] = 0xdeac;
-    cpu.ram[--cpu.SP] = 0xfade;
+    cpu.ram(--cpu.SP) = 0xdeac;
+    cpu.ram(--cpu.SP) = 0xfade;
     std::vector<std::uint16_t> codez = {0x7d60, 0xdead};
     cpu.flash(codez.begin(), codez.end());
     int cycles = execute(cpu);
@@ -821,14 +823,14 @@ TEST_CASE("values/register-pointers", "check pointers in registers") {
     std::vector<std::uint16_t> codez = {0x7E01, 0xDEAD, 0x0001, 0x7E21, 0xDEAD, 0x0001, 0x7E41, 0xDEAD, 0x0001, 0x7E61, 0xDEAD, 0x0001, 0x7E81, 0xDEAD, 0x0001, 0x7EA1, 0xDEAD, 0x0001, 0x7EC1, 0xDEAD, 0x0001, 0x7EE1, 0xDEAD, 0x0001};
     cpu.flash(codez.begin(), codez.end());
     int cycles = execute(cpu);
-    REQUIRE(cpu.ram[0x1000] == 0xdead);
-    REQUIRE(cpu.ram[0x1001] == 0xdead);
-    REQUIRE(cpu.ram[0x1002] == 0xdead);
-    REQUIRE(cpu.ram[0x1003] == 0xdead);
-    REQUIRE(cpu.ram[0x1004] == 0xdead);
-    REQUIRE(cpu.ram[0x1005] == 0xdead);
-    REQUIRE(cpu.ram[0x1006] == 0xdead);
-    REQUIRE(cpu.ram[0x1007] == 0xdead);
+    REQUIRE(cpu.ram(0x1000) == 0xdead);
+    REQUIRE(cpu.ram(0x1001) == 0xdead);
+    REQUIRE(cpu.ram(0x1002) == 0xdead);
+    REQUIRE(cpu.ram(0x1003) == 0xdead);
+    REQUIRE(cpu.ram(0x1004) == 0xdead);
+    REQUIRE(cpu.ram(0x1005) == 0xdead);
+    REQUIRE(cpu.ram(0x1006) == 0xdead);
+    REQUIRE(cpu.ram(0x1007) == 0xdead);
     REQUIRE(cycles == 24);
 }
 
@@ -846,14 +848,14 @@ TEST_CASE("values/register-nextword", "check [register + next word]") {
     std::vector<std::uint16_t> codez = {0x7D01, 0xDEAD, 0x7D21, 0xDEAD, 0x7D41, 0xDEAD, 0x7D61, 0xDEAD, 0x7D81, 0xDEAD, 0x7DA1, 0xDEAD, 0x7DC1, 0xDEAD, 0x7DE1, 0xDEAD};
     cpu.flash(codez.begin(), codez.end());
     int cycles = execute(cpu);
-    REQUIRE(cpu.ram[0x1000] == 0xdead);
-    REQUIRE(cpu.ram[0x1001] == 0xdead);
-    REQUIRE(cpu.ram[0x1002] == 0xdead);
-    REQUIRE(cpu.ram[0x1003] == 0xdead);
-    REQUIRE(cpu.ram[0x1004] == 0xdead);
-    REQUIRE(cpu.ram[0x1005] == 0xdead);
-    REQUIRE(cpu.ram[0x1006] == 0xdead);
-    REQUIRE(cpu.ram[0x1007] == 0xdead);
+    REQUIRE(cpu.ram(0x1000) == 0xdead);
+    REQUIRE(cpu.ram(0x1001) == 0xdead);
+    REQUIRE(cpu.ram(0x1002) == 0xdead);
+    REQUIRE(cpu.ram(0x1003) == 0xdead);
+    REQUIRE(cpu.ram(0x1004) == 0xdead);
+    REQUIRE(cpu.ram(0x1005) == 0xdead);
+    REQUIRE(cpu.ram(0x1006) == 0xdead);
+    REQUIRE(cpu.ram(0x1007) == 0xdead);
     REQUIRE(cycles == 16);
 }
 
@@ -864,12 +866,12 @@ TEST_CASE("values/stack", "check stack") {
     cpu.flash(codez.begin(), codez.end());
     int cycles = execute(cpu);
     REQUIRE(cpu.SP == 0xffff);
-    REQUIRE(cpu.ram[cpu.SP] == 0xdead);
+    REQUIRE(cpu.ram(cpu.SP) == 0xdead);
     REQUIRE(cycles == 2);
 
     cpu.reset();
 
-    cpu.ram[--cpu.SP] = 0xdead;
+    cpu.ram(--cpu.SP) = 0xdead;
     codez = {0x6001};
     cpu.flash(codez.begin(), codez.end());
     cycles = execute(cpu);
@@ -879,7 +881,7 @@ TEST_CASE("values/stack", "check stack") {
 
     cpu.reset();
 
-    cpu.ram[--cpu.SP] = 0xdead;
+    cpu.ram(--cpu.SP) = 0xdead;
     codez = {0x6401};
     cpu.flash(codez.begin(), codez.end());
     cycles = execute(cpu);
@@ -889,9 +891,9 @@ TEST_CASE("values/stack", "check stack") {
 
     cpu.reset();
 
-    cpu.ram[--cpu.SP] = 0xdead;
-    cpu.ram[--cpu.SP] = 0xfade;
-    cpu.ram[--cpu.SP] = 0xcafe;
+    cpu.ram(--cpu.SP) = 0xdead;
+    cpu.ram(--cpu.SP) = 0xfade;
+    cpu.ram(--cpu.SP) = 0xcafe;
     codez = {0x6801, 0x0002};
     cpu.flash(codez.begin(), codez.end());
     cycles = execute(cpu);
@@ -933,7 +935,7 @@ TEST_CASE("values/next-word-pointer", "check next word pointer addressing") {
     std::vector<std::uint16_t> codez = {0x7fc1, 0xdead, 0x8000};
     cpu.flash(codez.begin(), codez.end());
     int cycles = execute(cpu);
-    REQUIRE(cpu.ram[0x8000] == 0xdead);
+    REQUIRE(cpu.ram(0x8000) == 0xdead);
     REQUIRE(cycles == 3);
 }
 
@@ -983,9 +985,9 @@ TEST_CASE("interrupts/queueing", "check interrupt queueing") {
     cpu.interrupt(0x21);
     cpu.interrupt(0x3f);
     cpu.interrupt(0x13);
-    cpu.ram[0x1] = 0x0022;
-    cpu.ram[0x2] = 0x7d60;
-    cpu.ram[0x3] = 0x0f00;
+    cpu.ram(0x1) = 0x0022;
+    cpu.ram(0x2) = 0x7d60;
+    cpu.ram(0x3) = 0x0f00;
     execute(cpu);
     REQUIRE(cpu.B == 0x73);
 }
@@ -1168,7 +1170,7 @@ TEST_CASE("hardware/m35fd/read_from_floppy_disk", "test reading from floppy disk
 
     bool data_correct = true;
     for (int i=0; i < m35fd.SECTOR_SIZE; i++) {
-        if (cpu.ram[i] != disk.sector[i]) {
+        if (cpu.ram(i) != disk.sector[i]) {
             data_correct = false;
         }
     }
@@ -1410,9 +1412,9 @@ TEST_CASE("lem1802/mem_dump_font", "tests the lem1802's MEM_DUMP_FONT interrupt"
     bool identical = true;
 
     auto default_it = default_font.begin();
-    auto current_it = cpu.ram.begin();
+    auto current_it = cpu.memory.begin();
     std::advance(current_it, 0xdead);
-    for (; default_it != default_font.end() && current_it != cpu.ram.end(); ++default_it, ++current_it) {
+    for (; default_it != default_font.end() && current_it != cpu.memory.end(); ++default_it, ++current_it) {
         if (*current_it != *default_it) {
             identical = false;
             break;
@@ -1440,9 +1442,9 @@ TEST_CASE("lem1802/mem_dump_palette", "tests the lem1802's MEM_DUMP_PALETTE inte
     bool identical = true;
 
     auto default_it = default_palette.begin();
-    auto current_it = cpu.ram.begin();
+    auto current_it = cpu.memory.begin();
     std::advance(current_it, 0xdead);
-    for (; default_it != default_palette.end() && current_it != cpu.ram.end(); ++default_it, ++current_it) {
+    for (; default_it != default_palette.end() && current_it != cpu.memory.end(); ++default_it, ++current_it) {
         if (*current_it != *default_it) {
             identical = false;
             break;

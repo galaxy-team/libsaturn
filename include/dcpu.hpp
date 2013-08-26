@@ -57,8 +57,9 @@ namespace galaxy {
 
         public:
             const static int RAM_SIZE = 0x10000;
-            std::array<std::uint16_t, RAM_SIZE> ram;
-            uint16_t A, B, C, X, Y, Z, I, J, PC, SP, EX, IA;
+            const static int NUM_MEM_BANKS = 8;
+            std::array<std::uint16_t, RAM_SIZE * NUM_MEM_BANKS> memory;
+            uint16_t A, B, C, X, Y, Z, I, J, PC, SP, EX, IA, MB, RM;
 
             /**
              * The number of cycles the DCPU should sleep.
@@ -74,10 +75,10 @@ namespace galaxy {
             /// initialize the CPU to default values
             dcpu()  :   queue_interrupts(false), guard_interrupts(false),
                         A(0), B(0), C(0), X(0), Y(0), Z(0), I(0), J(0),
-                        PC(0), SP(0), EX(0), IA(0),
+                        PC(0), SP(0), EX(0), IA(0), MB(0), RM(0),
                         sleep_cycles(0), clock_speed(100000)
             {
-                ram.fill(0);
+                memory.fill(0);
             }
 
             /// perform a CPU cycle
@@ -88,6 +89,11 @@ namespace galaxy {
              */
             void interrupt(std::uint16_t);
 
+            /**
+             * Access ram from current memory bank
+             */
+            std::uint16_t& ram(std::uint16_t);
+
             /// attach a hardware device to the CPU. converts the pointer to a unique_ptr, and so returns a reference so you can still use it after attaching it.
             device& attach_device(device*);
 
@@ -95,7 +101,7 @@ namespace galaxy {
             typename std::enable_if<std::is_same<typename std::iterator_traits<Iterator>::value_type, uint16_t>::value>::type>
             void flash(Iterator begin, Iterator end)
             {
-                std::copy(begin, end, ram.begin());
+                std::copy(begin, end, memory.begin());
             }
 
             /// Reset memory and registers
@@ -115,6 +121,7 @@ namespace galaxy {
                     };
             };
             const std::vector<std::unique_ptr<galaxy::saturn::device>> &get_devices() const;
+
         };
     }
 }

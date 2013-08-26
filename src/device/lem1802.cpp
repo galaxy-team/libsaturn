@@ -105,8 +105,8 @@ void galaxy::saturn::lem1802::interrupt()
             {
                 auto font_it = default_font.begin();
                 auto ram_it = cpu->memory.begin();
-                // TODO: state the following more elegantly
-                std::advance(ram_it, cpu->B + cpu->NUM_MEM_BANKS * cpu->RAM_SIZE);
+                // TODO: limit the following to primary memory bank
+                std::advance(ram_it, cpu->B);
                 for (; font_it != default_font.end() && ram_it != cpu->memory.end(); ++font_it, ++ram_it)
                 {
                     *ram_it = *font_it;
@@ -124,8 +124,8 @@ void galaxy::saturn::lem1802::interrupt()
             {
                 auto palette_it = default_palette.begin();
                 auto ram_it = cpu->memory.begin();
-                // TODO: state the following more elegantly
-                std::advance(ram_it, cpu->B + cpu->NUM_MEM_BANKS * cpu->RAM_SIZE);
+                // TODO: limit the following to primary memory bank
+                std::advance(ram_it, cpu->B);
                 for (; palette_it != default_palette.end() && ram_it != cpu->memory.end(); ++palette_it, ++ram_it)
                 {
                     *ram_it = *palette_it;

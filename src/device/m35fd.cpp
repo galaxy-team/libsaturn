@@ -90,8 +90,9 @@ void galaxy::saturn::m35fd::interrupt()
                 int read_from = cpu->Y;
 
                 auto ram_begin = cpu->memory.begin(), ram_end = cpu->memory.begin();
-                std::advance(ram_begin, read_from + cpu->NUM_MEM_BANKS * cpu->RAM_SIZE);
-                std::advance(ram_end, read_from + SECTOR_SIZE + cpu->NUM_MEM_BANKS * cpu->RAM_SIZE);
+                // TODO: limit the following to primary memory bank
+                std::advance(ram_begin, read_from);
+                std::advance(ram_end, read_from + SECTOR_SIZE);
 
                 std::copy(
                     ram_begin,               // copy start
@@ -121,7 +122,8 @@ void galaxy::saturn::m35fd::cycle() {
         } else {
             if (reading) {
                 auto ram_begin = cpu->memory.begin();
-                std::advance(ram_begin, read_to + cpu->NUM_MEM_BANKS * cpu->RAM_SIZE);
+                // TODO: limit the following to primary memory bank
+                std::advance(ram_begin, read_to);
                 std::copy(
                     buffer.begin(),               // copy start
                     buffer.end(),                 // copy end
