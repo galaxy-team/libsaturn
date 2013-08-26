@@ -965,6 +965,15 @@ TEST_CASE("conditionals/skipping", "check conditional skipping") {
     int cycles = execute(cpu);
     REQUIRE(cpu.A == 0x0);
     REQUIRE(cycles == 5);
+
+    // see https://github.com/galaxy-team/libsaturn/pull/6 for details
+    cpu.reset();
+
+    codez = {0x7c01, 0x0000, 0x7ff2, 0x0000, 0x0001, 0x7e00, 0x0000, 0x7c01, 0x0001, 0x7c21, 0x0001};
+    cpu.flash(codez.begin(), codez.end());
+    cycles = execute(cpu);
+    REQUIRE(cpu.A == 1);
+    REQUIRE(cpu.B == 1);
 }
 
 TEST_CASE("interrupts/queueing", "check interrupt queueing") {
