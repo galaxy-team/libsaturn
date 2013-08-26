@@ -37,7 +37,7 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
     add_executable(tests
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/tests.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_device.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/units/test_disk.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_disk.cpp
     )
     target_link_libraries(tests libsaturn)
 endif()
