@@ -21,7 +21,7 @@ before_script:
 script:
    - "cmake ."
    - "make"
-   - "./bin/test_saturn"
+   - "./bin/test_libsaturn"
 
 notifications:
   irc: "irc.freenode.net#0x10c-galaxy"
