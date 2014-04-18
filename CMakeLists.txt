@@ -38,4 +38,4 @@ add_executable(test_libsaturn
     ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_device.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_disk.cpp
 )
-target_link_libraries(tests libsaturn)
+target_link_libraries(test_libsaturn libsaturn)
